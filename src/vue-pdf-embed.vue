@@ -88,12 +88,16 @@ export default {
      * @values Number, String
      */
     width: [Number, String],
+    showPages: Number,
+
   },
   data() {
+
     return {
       document: null,
       pageCount: null,
       pageNums: [],
+      renderedPages: [],
     }
   },
   computed: {
@@ -113,6 +117,7 @@ export default {
     },
   },
   created() {
+
     this.$watch(
       () => [
         this.source,
@@ -122,6 +127,8 @@ export default {
         this.page,
         this.rotation,
         this.width,
+        // 
+        this.showPages,
       ],
       async ([newSource], [oldSource]) => {
         if (newSource !== oldSource) {
@@ -238,7 +245,7 @@ export default {
         const pageNums =
           this.page && !allPages
             ? [this.page]
-            : [...Array(this.document.numPages + 1).keys()].slice(1)
+            : [...Array(this.showPages).keys()].slice(1)
 
         await Promise.all(
           pageNums.map(async (pageNum, i) => {
@@ -300,10 +307,13 @@ export default {
       try {
         this.pageNums = this.page
           ? [this.page]
-          : [...Array(this.document.numPages + 1).keys()].slice(1)
-
+          : [...Array(this.showPages+1).keys()].slice(1)
         await Promise.all(
           this.pageNums.map(async (pageNum, i) => {
+            if (this.renderedPages.includes(pageNum)) {
+              return
+            }
+            this.renderedPages.push(pageNum)
             const page = await this.document.getPage(pageNum)
             const [canvas, div1, div2] = this.$el.children[i].children
             const [actualWidth, actualHeight] = this.getPageDimensions(
