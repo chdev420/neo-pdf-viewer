@@ -89,10 +89,9 @@ export default {
      */
     width: [Number, String],
     showPages: Number,
-
+    onePage: Boolean,
   },
   data() {
-
     return {
       document: null,
       pageCount: null,
@@ -117,7 +116,6 @@ export default {
     },
   },
   created() {
-
     this.$watch(
       () => [
         this.source,
@@ -127,7 +125,7 @@ export default {
         this.page,
         this.rotation,
         this.width,
-        // 
+        //
         this.showPages,
       ],
       async ([newSource], [oldSource]) => {
@@ -136,6 +134,12 @@ export default {
           await this.load()
         }
         this.render()
+      }
+    )
+    this.$watch(
+      () => this.onePage,
+      () => {
+        this.renderedPages = []
       }
     )
   },
@@ -245,9 +249,9 @@ export default {
         const pageNums =
           this.page && !allPages
             ? [this.page]
-            : this.showPages > this.pageCount 
-            ? [...Array(this.pageCount+1).keys()].slice(1)
-            : [...Array(this.showPages+1).keys()].slice(1) 
+            : this.showPages > this.pageCount
+              ? [...Array(this.pageCount + 1).keys()].slice(1)
+              : [...Array(this.showPages + 1).keys()].slice(1)
 
         await Promise.all(
           pageNums.map(async (pageNum, i) => {
@@ -313,12 +317,12 @@ export default {
       try {
         this.pageNums = this.page
           ? [this.page]
-          : this.showPages > this.pageCount 
-          ? [...Array(this.pageCount+1).keys()].slice(1)
-          : [...Array(this.showPages+1).keys()].slice(1) 
+          : this.showPages > this.pageCount
+            ? [...Array(this.pageCount + 1).keys()].slice(1)
+            : [...Array(this.showPages + 1).keys()].slice(1)
         await Promise.all(
           this.pageNums.map(async (pageNum, i) => {
-            if (this.renderedPages.includes(pageNum)) {
+            if (this.renderedPages.includes(pageNum) && !this.onePage) {
               return
             }
             this.renderedPages.push(pageNum)
