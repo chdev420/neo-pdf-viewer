@@ -245,10 +245,16 @@ export default {
         const pageNums =
           this.page && !allPages
             ? [this.page]
-            : [...Array(this.showPages).keys()].slice(1)
+            : this.showPages > this.pageCount 
+            ? [...Array(this.pageCount+1).keys()].slice(1)
+            : [...Array(this.showPages+1).keys()].slice(1) 
 
         await Promise.all(
           pageNums.map(async (pageNum, i) => {
+            if (this.renderedPages.includes(pageNum)) {
+              return
+            }
+            this.renderedPages.push(pageNum)
             const page = await this.document.getPage(pageNum)
             const viewport = page.getViewport({ scale: 1 })
 
@@ -307,7 +313,9 @@ export default {
       try {
         this.pageNums = this.page
           ? [this.page]
-          : [...Array(this.showPages+1).keys()].slice(1)
+          : this.showPages > this.pageCount 
+          ? [...Array(this.pageCount+1).keys()].slice(1)
+          : [...Array(this.showPages+1).keys()].slice(1) 
         await Promise.all(
           this.pageNums.map(async (pageNum, i) => {
             if (this.renderedPages.includes(pageNum)) {
