@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VuePdfEmbed from '../src/vue-pdf-embed.vue'
 
-HTMLCanvasElement.prototype.getContext = () => { }
+HTMLCanvasElement.prototype.getContext = () => {}
 
 jest.mock('pdfjs-dist/legacy/build/pdf.worker.js', () => jest.fn())
 
@@ -28,7 +28,6 @@ beforeEach(() => {
       disableAnnotationLayer: true,
       disableTextLayer: true,
       source: 'SOURCE',
-      showPages: 9,
     },
   }).$mount()
   emitSpy = jest.spyOn(vm, '$emit')
