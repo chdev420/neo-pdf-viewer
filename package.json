@@ -1,6 +1,6 @@
 {
   "name": "neo-pdf-viewer",
-  "version": "1.0.53",
+  "version": "1.0.55",
   "description": "PDF embed component for Vue 2 and Vue 3",
   "keywords": [
     "vue",
