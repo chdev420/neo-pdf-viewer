@@ -181,7 +181,7 @@ export default {
      * @param {number} ratio - Page aspect ratio.
      */
     getPageDimensions(page, ratio) {
-      const rotation = page._pageInfo.rotate ?? 0
+      const rotation = page?._pageInfo?.rotate ?? 0
       let height, width
       if (this.height && !this.width) {
         height = this.height
