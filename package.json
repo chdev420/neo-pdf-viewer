@@ -59,8 +59,5 @@
   },
   "peerDependencies": {
     "vue": "^2.x || ^3.x"
-  },
-  "dependencies": {
-    "@coddicat/vue-pinch-scroll-zoom": "^3.3.4"
   }
 }
