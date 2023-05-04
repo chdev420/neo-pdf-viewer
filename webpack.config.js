@@ -1,10 +1,15 @@
 const { merge } = require('webpack-merge')
 const CopyPlugin = require('copy-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
-const { VueLoaderPlugin: Vue2LoaderPlugin } = require('vue-loader')
-const { VueLoaderPlugin: Vue3LoaderPlugin } = require('vue-loader-next')
+const { VueLoaderPlugin } = require('vue-loader-next')
 
 const commonConfig = {
+  resolve: {
+    symlinks: false,
+    alias: {
+      vue: 'vue'
+    }
+  },
   mode: 'production',
   entry: './src/index.js',
   output: {
@@ -22,7 +27,14 @@ const commonConfig = {
       },
       {
         test: /\.vue$/,
-        loader: 'vue-loader',
+        loader: 'vue-loader-next',
+        // options: {
+        //   compilerOptions: {
+        //     compatConfig: {
+        //       MODE: 2
+        //     }
+        //   }
+        // }
       },
       {
         test: /\.s?css$/,
@@ -50,7 +62,7 @@ const commonConfig = {
     ],
   },
   externals: {
-    vue: 'vue',
+    vue: 'vue'
   },
   performance: {
     hints: false,
@@ -60,17 +72,10 @@ const commonConfig = {
 module.exports = [
   merge(commonConfig, {
     output: {
-      clean: true,
-      filename: 'vue2-pdf-embed.js',
-    },
-    plugins: [new Vue2LoaderPlugin()],
-  }),
-  merge(commonConfig, {
-    output: {
       filename: 'vue3-pdf-embed.js',
     },
     plugins: [
-      new Vue3LoaderPlugin(),
+      new VueLoaderPlugin(),
       new CopyPlugin({ patterns: [{ from: 'types' }] }),
     ],
   }),

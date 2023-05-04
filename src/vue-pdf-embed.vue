@@ -1,16 +1,30 @@
 <template>
   <div :id="id" class="vue-pdf-embed">
-    <div v-for="pageNum in pageNums" :key="pageNum" :id="id && `${id}-${pageNum}`">
-      <canvas></canvas>
-
-      <div v-if="!disableTextLayer" class="textLayer" />
-
-      <div v-if="!disableAnnotationLayer" class="annotationLayer" />
+    <div
+      v-for="pageNum in pageNums"
+      :key="pageNum"
+      :id="id && `${id}-${pageNum}`"
+    >
+      <PinchScrollZoom
+        ref="zoomer"
+        :width="300"
+        :height="400"
+        :scale="1"
+        @scaling="scalingHandler"
+      >
+        <canvas></canvas>
+        <div v-if="!disableTextLayer" class="textLayer" />
+        <div v-if="!disableAnnotationLayer" class="annotationLayer" />
+      </PinchScrollZoom>
     </div>
   </div>
 </template>
 
 <script>
+import PinchScrollZoom, {
+  PinchScrollZoomEmitData,
+} from '@coddicat/vue3-pinch-scroll-zoom'
+
 import * as pdf from 'pdfjs-dist/legacy/build/pdf.js'
 import PdfWorker from 'pdfjs-dist/legacy/build/pdf.worker.js'
 import { PDFLinkService } from 'pdfjs-dist/legacy/web/pdf_viewer.js'
@@ -25,6 +39,9 @@ pdf.GlobalWorkerOptions.workerPort = new PdfWorker()
 
 export default {
   name: 'VuePdfEmbed',
+  components: {
+    PinchScrollZoom,
+  },
   props: {
     /**
      * Whether the annotation layer should be disabled.
@@ -156,13 +173,16 @@ export default {
     this.document?.destroy()
   },
   methods: {
+    scalingHandler(data) {
+      console.log(data)
+    },
     /**
      * Returns an array of the actual page width and height based on props and
      * aspect ratio.
      * @param {number} ratio - Page aspect ratio.
      */
     getPageDimensions(page, ratio) {
-      const rotation = page._pageInfo.rotate ?? 0
+      const rotation = page?._pageInfo?.rotate ?? 0
       console.log(page._pageInfo.rotate)
       let height, width
       if (this.height && !this.width) {
@@ -250,8 +270,8 @@ export default {
           this.page && !allPages
             ? [this.page]
             : this.showPages > this.pageCount
-              ? [...Array(this.pageCount + 1).keys()].slice(1)
-              : [...Array(this.showPages + 1).keys()].slice(1)
+            ? [...Array(this.pageCount + 1).keys()].slice(1)
+            : [...Array(this.showPages + 1).keys()].slice(1)
 
         await Promise.all(
           pageNums.map(async (pageNum, i) => {
@@ -318,8 +338,8 @@ export default {
         this.pageNums = this.page
           ? [this.page]
           : this.showPages > this.pageCount
-            ? [...Array(this.pageCount + 1).keys()].slice(1)
-            : [...Array(this.showPages + 1).keys()].slice(1)
+          ? [...Array(this.pageCount + 1).keys()].slice(1)
+          : [...Array(this.showPages + 1).keys()].slice(1)
         await Promise.all(
           this.pageNums.map(async (pageNum, i) => {
             if (this.renderedPages.includes(pageNum) && !this.onePage) {
@@ -327,7 +347,8 @@ export default {
             }
             this.renderedPages.push(pageNum)
             const page = await this.document.getPage(pageNum)
-            const [canvas, div1, div2] = this.$el.children[i].children
+            const [canvas, div1, div2] =
+              this.$el.children[i].children[0].children[0].children
             const [actualWidth, actualHeight] = this.getPageDimensions(
               page,
               page.view[3] / page.view[2]
@@ -432,7 +453,7 @@ export default {
 @import 'styles/annotation-layer';
 
 .vue-pdf-embed {
-  &>div {
+  & > div {
     position: relative;
   }
 
