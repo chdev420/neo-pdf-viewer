@@ -7,8 +7,13 @@
     >
       <PinchScrollZoom
         ref="zoomer"
-        :width="myheight(index)"
-        :height="mywidth(index)"
+        :width="
+          parseInt(this.renderedPageSize[index]?.width.replace('px', '')) ?? 400
+        "
+        :height="
+          parseInt(this.renderedPageSize[index]?.height.replace('px', '')) ??
+          300
+        "
         :scale="1"
         @scaling="scalingHandler"
       >
