@@ -7,15 +7,12 @@
     >
       <PinchScrollZoom
         ref="zoomer"
-        :width="
-          parseInt(this.renderedPageSize[index]?.width.replace('px', '')) ?? 400
-        "
-        :height="
-          parseInt(this.renderedPageSize[index]?.height.replace('px', '')) ??
-          300
-        "
+        :width="mywidth(index)"
+        :height="myheight(index)"
         :scale="1"
+        :min-scale="1"
         @scaling="scalingHandler"
+        :draggable="draggable"
       >
         <canvas></canvas>
         <div v-if="!disableTextLayer" class="textLayer" />
@@ -112,6 +109,7 @@ export default {
     width: [Number, String],
     showPages: Number,
     onePage: Boolean,
+    draggable: Boolean,
   },
   data() {
     return {
@@ -136,6 +134,14 @@ export default {
         },
       })
       return service
+    },
+    myheight() {
+      return (i) =>
+        parseInt(this.renderedPageSize[i]?.height?.replace('px', '') ?? 300)
+    },
+    mywidth() {
+      return (i) =>
+        parseInt(this.renderedPageSize[i]?.width?.replace('px', '') ?? 400)
     },
   },
   created() {
@@ -178,12 +184,6 @@ export default {
     this.document?.destroy()
   },
   methods: {
-    myheight(i) {
-      return this.renderedPageSize[i]?.height ?? 300
-    },
-    mywidth(i) {
-      return this.renderedPageSize[i]?.width ?? 400
-    },
     scalingHandler(data) {
       console.log(data)
     },
