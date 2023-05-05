@@ -1,14 +1,14 @@
 <template>
   <div :id="id" class="vue-pdf-embed">
     <div
-      v-for="pageNum in pageNums"
+      v-for="(pageNum, index) in pageNums"
       :key="pageNum"
       :id="id && `${id}-${pageNum}`"
     >
       <PinchScrollZoom
         ref="zoomer"
-        :width="300"
-        :height="400"
+        :width="myheight(index)"
+        :height="mywidth(index)"
         :scale="1"
         @scaling="scalingHandler"
       >
@@ -114,6 +114,7 @@ export default {
       pageCount: null,
       pageNums: [],
       renderedPages: [],
+      renderedPageSize: [],
     }
   },
   computed: {
@@ -142,7 +143,6 @@ export default {
         this.page,
         this.rotation,
         this.width,
-        //
         this.showPages,
       ],
       async ([newSource], [oldSource]) => {
@@ -173,6 +173,12 @@ export default {
     this.document?.destroy()
   },
   methods: {
+    myheight(i) {
+      return this.renderedPageSize[i]?.height ?? 300
+    },
+    mywidth(i) {
+      return this.renderedPageSize[i]?.width ?? 400
+    },
     scalingHandler(data) {
       console.log(data)
     },
@@ -396,7 +402,10 @@ export default {
 
       canvas.width = viewport.width
       canvas.height = viewport.height
-
+      this.renderedPageSize.push({
+        width: canvas.style.width,
+        height: canvas.style.height,
+      })
       await page.render({
         canvasContext: canvas.getContext('2d'),
         viewport,
@@ -448,17 +457,15 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style>
 @import 'styles/text-layer';
 @import 'styles/annotation-layer';
 
-.vue-pdf-embed {
-  & > div {
-    position: relative;
-  }
+.vue-pdf-embed > div {
+  position: relative;
+}
 
-  canvas {
-    display: block;
-  }
+.vue-pdf-embed > canvas {
+  display: block;
 }
 </style>
