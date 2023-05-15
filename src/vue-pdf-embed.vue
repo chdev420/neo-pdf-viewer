@@ -1,22 +1,38 @@
 <template>
   <div :id="id" class="vue-pdf-embed">
-    <div
-      v-for="(pageNum, index) in pageNums"
-      :key="pageNum"
-      :id="id && `${id}-${pageNum}`"
-    >
+    <template v-if="fileType == 'pdf'">
+      <div
+        v-for="(pageNum, index) in pageNums"
+        :key="pageNum"
+        :id="id && `${id}-${pageNum}`"
+      >
+        <PinchScrollZoom
+          ref="zoomer"
+          :width="mywidth(index)"
+          :height="myheight(index)"
+          :scale="1"
+          :min-scale="1"
+          @scaling="scalingHandler"
+          :draggable="draggable"
+        >
+          <canvas></canvas>
+          <div v-if="!disableTextLayer" class="textLayer" />
+          <div v-if="!disableAnnotationLayer" class="annotationLayer" />
+        </PinchScrollZoom>
+      </div>
+    </template>
+    <div v-if="/(gif|jpe?g|tiff?|png|webp|bmp)$/i.test(fileType)">
       <PinchScrollZoom
         ref="zoomer"
-        :width="mywidth(index)"
-        :height="myheight(index)"
+        :width="myImageWidthVar"
+        :height="myImageHeightVar"
         :scale="1"
         :min-scale="1"
         @scaling="scalingHandler"
         :draggable="draggable"
+        :id="id && `${id}-1`"
       >
-        <canvas></canvas>
-        <div v-if="!disableTextLayer" class="textLayer" />
-        <div v-if="!disableAnnotationLayer" class="annotationLayer" />
+        <img id="myImage" ref="imageRef" :src="source" />
       </PinchScrollZoom>
     </div>
   </div>
@@ -110,6 +126,7 @@ export default {
     showPages: Number,
     onePage: Boolean,
     draggable: Boolean,
+    fileType: String,
   },
   data() {
     return {
@@ -118,6 +135,8 @@ export default {
       pageNums: [],
       renderedPages: [],
       renderedPageSize: [],
+      myImageWidthVar: 300,
+      myImageHeightVar: 300,
     }
   },
   computed: {
@@ -143,37 +162,67 @@ export default {
       return (i) =>
         parseInt(this.renderedPageSize[i]?.width?.replace('px', '') ?? 400)
     },
+    async myImageWidth() {
+      const imageRef = this.$refs.imageRef
+      if (!imageRef) return 300
+      console.log(imageRef)
+      return imageRef.clientWidth
+    },
+    async myImageHeight() {
+      const imageRef = this.$refs.imageRef
+      if (!imageRef) return 300
+      console.log(imageRef)
+      return imageRef.clientHeight
+    },
   },
   created() {
-    this.$watch(
-      () => [
-        this.source,
-        this.disableAnnotationLayer,
-        this.disableTextLayer,
-        this.height,
-        this.page,
-        this.rotation,
-        this.width,
-        this.showPages,
-      ],
-      async ([newSource], [oldSource]) => {
-        if (newSource !== oldSource) {
-          releaseChildCanvases(this.$el)
-          await this.load()
+    if (this.fileType == 'pdf') {
+      this.$watch(
+        () => [
+          this.source,
+          this.disableAnnotationLayer,
+          this.disableTextLayer,
+          this.height,
+          this.page,
+          this.rotation,
+          this.width,
+          this.showPages,
+        ],
+        async ([newSource], [oldSource]) => {
+          if (newSource !== oldSource) {
+            releaseChildCanvases(this.$el)
+            await this.load()
+          }
+          this.render()
         }
-        this.render()
-      }
-    )
-    this.$watch(
-      () => this.onePage,
-      () => {
-        this.renderedPages = []
-      }
-    )
+      )
+      this.$watch(
+        () => this.onePage,
+        () => {
+          this.renderedPages = []
+        }
+      )
+    }
   },
   async mounted() {
-    await this.load()
-    this.render()
+    if (this.fileType == 'pdf') {
+      await this.load()
+      this.render()
+    }
+    let myImage = document.getElementById('myImage')
+    while (!myImage) {
+      await new Promise((resolve) => setTimeout(resolve, 100))
+      myImage = document.getElementById('myImage')
+    }
+    this.myImageWidthVar = myImage.clientWidth
+    this.myImageHeightVar = myImage.clientHeight
+  },
+  async updated() {
+    if (!/(gif|jpe?g|tiff?|png|webp|bmp)$/i.test(this.fileType)) {
+      console.error('Unsupported file type')
+      console.error(this.fileType)
+      this.$emit('rendering-failed')
+    }
   },
   beforeDestroy() {
     releaseChildCanvases(this.$el)
