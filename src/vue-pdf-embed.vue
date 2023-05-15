@@ -165,13 +165,11 @@ export default {
     async myImageWidth() {
       const imageRef = this.$refs.imageRef
       if (!imageRef) return 300
-      console.log(imageRef)
       return imageRef.clientWidth
     },
     async myImageHeight() {
       const imageRef = this.$refs.imageRef
       if (!imageRef) return 300
-      console.log(imageRef)
       return imageRef.clientHeight
     },
   },
@@ -233,9 +231,6 @@ export default {
     this.document?.destroy()
   },
   methods: {
-    scalingHandler(data) {
-      console.log(data)
-    },
     /**
      * Returns an array of the actual page width and height based on props and
      * aspect ratio.
@@ -243,7 +238,6 @@ export default {
      */
     getPageDimensions(page, ratio) {
       const rotation = page?._pageInfo?.rotate ?? 0
-      console.log(page._pageInfo.rotate)
       let height, width
       if (this.height && !this.width) {
         height = this.height
