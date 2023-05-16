@@ -21,7 +21,7 @@
         </PinchScrollZoom>
       </div>
     </template>
-    <div v-if="/(gif|jpe?g|tiff?|png|webp|bmp)$/i.test(fileType)">
+    <div v-if="/(gif|jpe?g|png|webp|bmp)$/i.test(fileType)">
       <PinchScrollZoom
         ref="zoomer"
         :width="myImageWidthVar"
@@ -215,7 +215,7 @@ export default {
     this.myImageHeightVar = myImage.clientHeight
   },
   async updated() {
-    if (!/(gif|jpe?g|tiff?|png|webp|bmp)$/i.test(this.fileType)) {
+    if (!/(gif|jpe?g|png|webp|bmp|pdf)$/i.test(this.fileType)) {
       console.error('Unsupported file type')
       console.error(this.fileType)
       this.$emit('rendering-failed')
