@@ -28,7 +28,6 @@
         :height="myImageHeightVar"
         :scale="1"
         :min-scale="1"
-        @scaling="scalingHandler"
         :draggable="draggable"
         :id="id && `${id}-1`"
       >
