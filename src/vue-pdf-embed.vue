@@ -12,7 +12,6 @@
           :height="myheight(index)"
           :scale="1"
           :min-scale="1"
-          @scaling="scalingHandler"
           :draggable="draggable"
         >
           <canvas></canvas>
@@ -202,17 +201,21 @@ export default {
     }
   },
   async mounted() {
+    console.log(this.fileType)
     if (this.fileType == 'pdf') {
+      console.log('loading')
       await this.load()
       this.render()
+    } else if (/(gif|jpe?g|png|webp|bmp)$/i.test(this.fileType)) {
+      console.log('image loading')
+      let myImage = document.getElementById('myImage')
+      while (!myImage) {
+        await new Promise((resolve) => setTimeout(resolve, 100))
+        myImage = document.getElementById('myImage')
+      }
+      this.myImageWidthVar = myImage.clientWidth
+      this.myImageHeightVar = myImage.clientHeight
     }
-    let myImage = document.getElementById('myImage')
-    while (!myImage) {
-      await new Promise((resolve) => setTimeout(resolve, 100))
-      myImage = document.getElementById('myImage')
-    }
-    this.myImageWidthVar = myImage.clientWidth
-    this.myImageHeightVar = myImage.clientHeight
   },
   async updated() {
     if (!/(gif|jpe?g|png|webp|bmp|pdf)$/i.test(this.fileType)) {
