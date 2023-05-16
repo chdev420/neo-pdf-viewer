@@ -29,9 +29,11 @@
         :min-scale="1"
         :draggable="draggable"
         :id="id && `${id}-1`"
+        v-if="myImageWidthVar"
       >
-        <img id="myImage" ref="imageRef" :src="source" />
+        <img ref="imageRef" :src="source" />
       </PinchScrollZoom>
+      <img id="myImage" ref="imageRef" :src="source" v-if="!myImageWidthVar" />
     </div>
   </div>
 </template>
@@ -133,8 +135,8 @@ export default {
       pageNums: [],
       renderedPages: [],
       renderedPageSize: [],
-      myImageWidthVar: 300,
-      myImageHeightVar: 300,
+      myImageWidthVar: 0,
+      myImageHeightVar: 0,
     }
   },
   computed: {
@@ -204,17 +206,24 @@ export default {
     if (this.fileType == 'pdf') {
       await this.load()
       this.render()
-    } else if (/(gif|jpe?g|png|webp|bmp)$/i.test(this.fileType)) {
+    }
+    if (/(gif|jpe?g|png|webp|bmp)$/i.test(this.fileType)) {
       let myImage = document.getElementById('myImage')
-      while (!myImage) {
+      let myImageWidth = 0
+      let myImageHeight = 0
+      while (!myImage || !myImageWidth || !myImageHeight) {
         await new Promise((resolve) => setTimeout(resolve, 100))
         myImage = document.getElementById('myImage')
+        myImageWidth = myImage?.clientWidth ?? 0
+        myImageHeight = myImage?.clientHeight ?? 0
       }
-      this.myImageWidthVar = myImage.clientWidth
-      this.myImageHeightVar = myImage.clientHeight
+      // i want my image width to match 90% of the width of the window
+      const scale = (0.9 * window.innerWidth) / myImageWidth
+      const newWidth = myImageWidth * scale
+      const newHeight = myImageHeight * scale
+      this.myImageWidthVar = newWidth
+      this.myImageHeightVar = newHeight
     }
-  },
-  async updated() {
     if (!/(gif|jpe?g|png|webp|bmp|pdf)$/i.test(this.fileType)) {
       console.error('Unsupported file type')
       console.error(this.fileType)
