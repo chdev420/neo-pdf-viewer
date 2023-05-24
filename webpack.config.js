@@ -14,7 +14,7 @@ const commonConfig = {
   entry: './src/index.js',
   output: {
     library: {
-      name: 'vue-pdf-embed',
+      name: 'neo-pdf-viewer',
       type: 'umd',
     },
   },
@@ -72,7 +72,7 @@ const commonConfig = {
 module.exports = [
   merge(commonConfig, {
     output: {
-      filename: 'vue3-pdf-embed.js',
+      filename: 'neo-pdf-viewer.js',
     },
     plugins: [
       new VueLoaderPlugin(),

@@ -1,14 +1,17 @@
 {
   "name": "neo-pdf-viewer",
   "version": "1.0.68",
-  "description": "PDF embed component for Vue 2 and Vue 3",
+  "description": "PDF embed component for Vue 3",
   "keywords": [
     "vue",
     "vuejs",
-    "pdf"
+    "pdf",
+    "embed",
+    "viewer",
+    "component"
   ],
-  "main": "dist/vue3-pdf-embed.js",
-  "types": "types/vue3-pdf-embed.d.ts",
+  "main": "dist/neo-pdf-viewer.js",
+  "types": "types/neo-pdf-viewer.d.ts",
   "files": [
     "dist/*",
     "src/*",
@@ -16,7 +19,7 @@
   ],
   "license": "MIT",
   "author": "chdev420",
-  "repository": "github:chdev420/vue-pdf-embed",
+  "repository": "github:chdev420/neo-pdf-viewer",
   "scripts": {
     "prepare": "webpack build",
     "build": "webpack build --progress",

@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import VuePdfEmbed from '../src/vue-pdf-embed.vue'
+import VuePdfEmbed from '../src/neo-pdf-viewer.vue'
 
 HTMLCanvasElement.prototype.getContext = () => { }
 
