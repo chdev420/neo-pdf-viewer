@@ -1,5 +1,5 @@
 <template>
-  <div :id="id" class="vue-pdf-embed">
+  <div :id="id" class="neo-pdf-viewer">
     <template v-if="fileType == 'pdf'">
       <div
         v-for="(pageNum, index) in pageNums"
@@ -56,7 +56,7 @@ import {
 pdf.GlobalWorkerOptions.workerPort = new PdfWorker()
 
 export default {
-  name: 'VuePdfEmbed',
+  name: 'NeoPdfViewer',
   components: {
     PinchScrollZoom,
   },
@@ -517,11 +517,11 @@ export default {
 @import 'styles/text-layer';
 @import 'styles/annotation-layer';
 
-.vue-pdf-embed > div {
+.neo-pdf-viewer > div {
   position: relative;
 }
 
-.vue-pdf-embed > canvas {
+.neo-pdf-viewer > canvas {
   display: block;
 }
 </style>

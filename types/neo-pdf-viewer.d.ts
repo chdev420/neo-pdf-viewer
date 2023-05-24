@@ -1,6 +1,6 @@
 import { ComputedOptions, DefineComponent, MethodOptions } from 'vue';
 
-export interface VuePdfEmbedProps {
+export interface NeoPdfViewerProps {
   disableAnnotationLayer?: boolean;
   disableTextLayer?: boolean;
   height?: number | string;
@@ -11,23 +11,23 @@ export interface VuePdfEmbedProps {
   width?: number | string;
 }
 
-export interface VuePdfEmbedData {
+export interface NeoPdfViewerData {
   document: object | null;
   pageCount: number | null;
   pageNums: number[];
 }
 
-export interface VuePdfEmbedMethods extends MethodOptions {
+export interface NeoPdfViewerMethods extends MethodOptions {
   print: (dpi?: number, filename?: string, allPages?: boolean) => Promise<void>;
   render: () => Promise<void>;
 }
 
-declare const VuePdfEmbed: DefineComponent<
-  VuePdfEmbedProps,
+declare const NeoPdfViewer: DefineComponent<
+  NeoPdfViewerProps,
   {},
-  VuePdfEmbedData,
+  NeoPdfViewerData,
   ComputedOptions,
-  VuePdfEmbedMethods
+  NeoPdfViewerMethods
 >;
 
-export default VuePdfEmbed;
+export default NeoPdfViewer;

@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import VuePdfEmbed from '../src/neo-pdf-viewer.vue'
+import NeoPdfViewer from '../src/neo-pdf-viewer.vue'
 
 HTMLCanvasElement.prototype.getContext = () => { }
 
@@ -19,7 +19,7 @@ jest.mock('pdfjs-dist/legacy/build/pdf.js', () => ({
   }),
 }))
 
-const Component = Vue.extend(VuePdfEmbed)
+const Component = Vue.extend(NeoPdfViewer)
 let vm, emitSpy
 
 beforeEach(() => {
